@@ -1,175 +1,135 @@
-import Header from "@/components/Header";
+const takeaways = [
+  {
+    tag: "Strength",
+    color: "#2FB87A",
+    bg: "#F0FBF6",
+    border: "#C3EDD9",
+    title: "Sustained inquiry engagement",
+    body: "You consistently lead with your own analysis before seeking input. This pattern correlates with stronger comprehension outcomes and reduced cognitive offloading.",
+    svgPath: <path d="M3 17l5-5 4 4 8-8" stroke="#2FB87A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />,
+  },
+  {
+    tag: "Watch",
+    color: "#D97706",
+    bg: "#FFFBF0",
+    border: "#FDE7A0",
+    title: "Late-session delegation spike",
+    body: "Your drafting ratio jumps to 60%+ after 40-minute sessions. Consider scheduling focused breaks to preserve cognitive agency in longer study blocks.",
+    svgPath: <><path d="M12 9v4M12 16v.5" stroke="#D97706" strokeWidth="1.8" strokeLinecap="round" /><path d="M10.3 4.8L2.5 18a1.8 1.8 0 001.6 2.7h15.8a1.8 1.8 0 001.6-2.7L13.7 4.8a1.8 1.8 0 00-3.4 0z" stroke="#D97706" strokeWidth="1.6" /></>,
+  },
+  {
+    tag: "Insight",
+    color: "#6D4AC2",
+    bg: "#F5F0FE",
+    border: "#D4C5F9",
+    title: "Morning sessions are highest-quality",
+    body: "Inquiry focus averages 78% before noon versus 52% after 4 PM. Your analytical sharpness is at its peak in the morning window.",
+    svgPath: <><circle cx="12" cy="12" r="9" stroke="#6D4AC2" strokeWidth="1.6" /><circle cx="12" cy="12" r="1.5" fill="#6D4AC2" /></>,
+  },
+];
 
-function GoalGauge({ value = 75 }: { value?: number }) {
-  const r = 38;
-  const c = 2 * Math.PI * r;
-  const sweep = 0.75;
-  const track = c * sweep;
-  const fill = track * (value / 100);
-
-  return (
-    <div className="flex flex-col items-center">
-      <svg width="110" height="110" viewBox="0 0 110 110">
-        <g transform="rotate(135 55 55)">
-          <circle
-            cx="55" cy="55" r={r}
-            fill="none"
-            stroke="#E4DCF5"
-            strokeWidth="12"
-            strokeLinecap="round"
-            strokeDasharray={`${track} ${c}`}
-          />
-          <circle
-            cx="55" cy="55" r={r}
-            fill="none"
-            stroke="#6D4AC2"
-            strokeWidth="12"
-            strokeLinecap="round"
-            strokeDasharray={`${fill} ${c}`}
-          />
-        </g>
-        <text
-          x="55" y="52"
-          textAnchor="middle"
-          style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 500, fill: "#262040" }}
-        >
-          {value}%
-        </text>
-        <text
-          x="55" y="68"
-          textAnchor="middle"
-          style={{ fontFamily: "var(--font-ui)", fontSize: 11, fill: "#6E6788" }}
-        >
-          Goal
-        </text>
-      </svg>
-    </div>
-  );
-}
+const weeks = [
+  { week: "Week 1", inquiry: 52 },
+  { week: "Week 2", inquiry: 58 },
+  { week: "Week 3", inquiry: 63 },
+  { week: "Week 4", inquiry: 65 },
+];
 
 export default function Report() {
   return (
-    <>
-      <Header />
-      <div className="px-4 pt-5 space-y-4">
-        {/* Title */}
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="mb-8 flex items-end justify-between">
         <div>
-          <p className="text-[11px] font-semibold tracking-widest text-mx-secondary font-ui uppercase mb-1">
-            Academic Summary
-          </p>
-          <h1 className="text-[26px] leading-tight font-medium font-display" style={{ color: "#262040" }}>
-            Thinking Report: Week 12
+          <h1 className="text-3xl font-medium" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>
+            Monthly Report
           </h1>
-          <button
-            className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium font-ui"
-            style={{ borderColor: "#6D4AC2", color: "#6D4AC2" }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M4 12v6a2 2 0 002 2h12a2 2 0 002-2v-6M12 3v12M8 7l4-4 4 4" stroke="#6D4AC2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Share with Tutor
-          </button>
+          <p className="mt-1 text-sm" style={{ color: "#6E6788" }}>June 2025 · 4-week summary</p>
         </div>
+        <button
+          className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border transition-colors hover:bg-[#F7F5FC]"
+          style={{ borderColor: "#E4DCF5", color: "#6D4AC2" }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path d="M12 4v12M8 12l4 4 4-4" stroke="#6D4AC2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 18h16" stroke="#6D4AC2" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          Export PDF
+        </button>
+      </div>
 
-        {/* Total Inquiry Ratio */}
-        <div className="rounded-2xl border border-mx-border bg-mx-surface p-5">
-          <div className="flex items-start justify-between mb-3">
-            <span className="text-sm font-medium text-mx-text font-ui">Total Inquiry Ratio</span>
-            <button aria-label="Info">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke="#B3A7D6" strokeWidth="1.6" />
-                <path d="M12 11v5M12 8v.5" stroke="#B3A7D6" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </button>
+      {/* Top stats row */}
+      <div className="grid grid-cols-4 gap-4 mb-5">
+        {[
+          { label: "Avg Inquiry Focus", value: "65%", delta: "↑ 13pt from last month", deltaColor: "#2FB87A" },
+          { label: "Total Sessions", value: "47", delta: "+12 from last month", deltaColor: "#2FB87A" },
+          { label: "Cognitive Debt Score", value: "38%", delta: "↓ 5pt from last month", deltaColor: "#2FB87A" },
+          { label: "Longest Inquiry Run", value: "7 days", delta: "Personal best", deltaColor: "#6D4AC2" },
+        ].map((s) => (
+          <div key={s.label} className="bg-white rounded-2xl border border-[#E4DCF5] p-5">
+            <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: "#6E6788" }}>{s.label}</p>
+            <p className="text-4xl font-medium" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>{s.value}</p>
+            <p className="text-xs mt-2 font-medium" style={{ color: s.deltaColor }}>{s.delta}</p>
           </div>
-          <p className="text-[42px] leading-none font-medium font-display" style={{ color: "#262040" }}>
-            3.4
-          </p>
-          <p className="text-sm text-mx-secondary font-ui mt-1">questions / session</p>
-          <div className="mt-3 w-full h-1.5 rounded-full bg-mx-border overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: "68%", background: "#6D4AC2" }} />
-          </div>
-          <p className="text-xs text-mx-secondary font-ui mt-2 flex items-center gap-1">
-            <span style={{ color: "#2FB87A", fontWeight: 600 }}>+0.4</span> from last week
-          </p>
-        </div>
+        ))}
+      </div>
 
-        {/* Primary Cognitive Mode */}
-        <div className="rounded-2xl border border-mx-border bg-mx-surface p-5">
-          <div className="flex items-start justify-between mb-3">
-            <span className="text-sm font-medium text-mx-text font-ui">Primary Cognitive Mode</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2l1.5 4h4l-3.3 2.4 1.3 4L12 10l-3.5 2.4 1.3-4L6.5 6h4z" stroke="#A77BFF" strokeWidth="1.5" strokeLinejoin="round" fill="#EDE7FB" />
-            </svg>
-          </div>
-          <div className="flex items-center gap-3 mt-2">
-            <div className="w-12 h-12 rounded-xl bg-mx-surface-alt flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" stroke="#6D4AC2" strokeWidth="1.7" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-base font-semibold text-mx-text font-ui">Analytical</p>
-              <p className="text-xs text-mx-secondary font-ui">Focusing on breakdown &amp; logic</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Critical Thinking Hours */}
-        <div className="rounded-2xl border border-mx-border bg-mx-surface p-5">
-          <div className="flex items-start justify-between mb-2">
-            <span className="text-sm font-medium text-mx-text font-ui">Critical Thinking Hours</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="#B3A7D6" strokeWidth="1.6" />
-              <path d="M12 7v5l3 2" stroke="#B3A7D6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <p className="text-[36px] leading-tight font-medium font-display" style={{ color: "#6D4AC2" }}>
-            12h 45m
-          </p>
-          <p className="text-xs text-mx-secondary font-ui mb-3">this week</p>
-          <p className="text-sm text-mx-text font-ui leading-relaxed mb-4">
-            Consistent engagement in deep-work sessions. Peak cognitive activity recorded between 9am and 11am.
-          </p>
-          <GoalGauge value={75} />
-        </div>
-
-        {/* Key Takeaways */}
-        <div>
-          <p className="text-[11px] font-semibold tracking-widest text-mx-secondary font-ui uppercase mb-3">
-            Key Takeaways
-          </p>
-          <div className="space-y-2">
-            {[
-              {
-                icon: (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9" stroke="#6D4AC2" strokeWidth="1.6" />
-                    <circle cx="12" cy="12" r="2" fill="#6D4AC2" />
-                  </svg>
-                ),
-                text: "Increased questioning depth in historical analysis modules.",
-              },
-              {
-                icon: (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2l1.5 4h4l-3.3 2.4 1.3 4L12 10l-3.5 2.4 1.3-4L6.5 6h4z" stroke="#A77BFF" strokeWidth="1.5" strokeLinejoin="round" fill="#EDE7FB" />
-                  </svg>
-                ),
-                text: "Momentary friction identified in statistical reasoning; recommend targeted review.",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 bg-mx-surface rounded-xl border border-mx-border px-4 py-3"
-              >
-                <span className="mt-0.5 flex-shrink-0">{item.icon}</span>
-                <p className="text-sm text-mx-text font-ui leading-relaxed">{item.text}</p>
+      {/* Middle row: trend bars + key takeaways */}
+      <div className="grid grid-cols-5 gap-5 mb-5">
+        {/* Weekly trend bars */}
+        <div className="col-span-2 bg-white rounded-2xl border border-[#E4DCF5] p-7">
+          <p className="text-xs font-semibold tracking-widest uppercase mb-6" style={{ color: "#6E6788" }}>4-week trend</p>
+          <div className="space-y-4">
+            {weeks.map((w) => (
+              <div key={w.week}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-medium" style={{ color: "#6E6788" }}>{w.week}</span>
+                  <span className="text-xs font-semibold" style={{ color: "#6D4AC2" }}>{w.inquiry}%</span>
+                </div>
+                <div className="relative h-2 rounded-full bg-[#F0EBF8] overflow-hidden">
+                  <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${w.inquiry}%`, background: "#6D4AC2" }} />
+                </div>
               </div>
             ))}
           </div>
+          <div className="mt-6 pt-5 border-t border-[#F7F5FC]">
+            <p className="text-xs mb-1" style={{ color: "#6E6788" }}>Monthly trajectory</p>
+            <p className="text-2xl font-medium" style={{ fontFamily: "var(--font-display)", color: "#2FB87A" }}>↑ Improving</p>
+          </div>
+        </div>
+
+        {/* Key takeaways */}
+        <div className="col-span-3 flex flex-col gap-4">
+          {takeaways.map((t) => (
+            <div key={t.tag} className="bg-white rounded-2xl border p-5 flex gap-4" style={{ borderColor: t.border }}>
+              <div className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: t.bg }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">{t.svgPath}</svg>
+              </div>
+              <div>
+                <span className="text-[11px] font-bold tracking-widest uppercase" style={{ color: t.color }}>{t.tag}</span>
+                <p className="text-sm font-semibold mb-1 mt-0.5" style={{ color: "#262040" }}>{t.title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: "#6E6788" }}>{t.body}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </>
+
+      {/* Recommendation footer */}
+      <div className="bg-white rounded-2xl border border-[#E4DCF5] p-6 flex items-center gap-5">
+        <div className="w-10 h-10 rounded-xl flex-shrink-0 bg-[#EDE7FB] flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l1.5 4h4l-3.3 2.4 1.3 4L12 10l-3.5 2.4 1.3-4L6.5 6h4z" stroke="#6D4AC2" strokeWidth="1.6" strokeLinejoin="round" fill="#EDE7FB" />
+          </svg>
+        </div>
+        <div>
+          <p className="text-sm font-semibold" style={{ color: "#262040" }}>Recommendation for July</p>
+          <p className="text-xs mt-0.5 leading-relaxed" style={{ color: "#6E6788" }}>
+            Aim to keep morning sessions for deep analytical work. Consider a 45-minute soft cap to avoid the late-session delegation spike. Target an inquiry focus of 70%+ by end of month.
+          </p>
+        </div>
+        <button className="ml-auto flex-shrink-0 text-sm font-medium px-4 py-2 rounded-xl text-white" style={{ background: "#6D4AC2" }}>
+          Set goals →
+        </button>
+      </div>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,19 +9,59 @@
   --font-ui: "Inter", system-ui, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   font-family: var(--font-ui);
-  background: #e8e4f0;
+  background: #F7F5FC;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
-textarea:focus,
-input:focus,
-button:focus-visible {
+textarea:focus, input:focus {
   outline: none;
   box-shadow: 0 0 0 3px #6D4AC244;
 }
+
+button:focus-visible {
+  outline: 2px solid #6D4AC2;
+  outline-offset: 2px;
+}
+
+/* Streaming text cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink::after {
+  content: '▋';
+  color: #6D4AC2;
+  animation: blink 1s infinite;
+  font-size: 0.85em;
+  margin-left: 1px;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #EDE7FB 25%, #F7F5FC 50%, #EDE7FB 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.4s ease-out; }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E4DCF5; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #A77BFF; }

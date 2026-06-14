@@ -1,106 +1,114 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/Header";
 
 const PROVIDERS = [
-  { id: "gemini", name: "Gemini", provider: "Google", linked: false },
-  { id: "chatgpt", name: "ChatGPT", provider: "OpenAI", linked: true },
-  { id: "perplexity", name: "Perplexity", provider: "Perplexity AI", linked: false },
-  { id: "claude", name: "Claude", provider: "Anthropic", linked: false },
-  { id: "deepseek", name: "DeepSeek", provider: "DeepSeek AI", linked: false },
-  { id: "qwen", name: "Qwen", provider: "Alibaba Cloud", linked: false },
+  { id: "chatgpt", name: "ChatGPT", provider: "OpenAI", linked: true, desc: "Track your ChatGPT conversations and measure inquiry depth per session." },
+  { id: "claude", name: "Claude", provider: "Anthropic", linked: false, desc: "Connect Claude to measure AI-assisted reasoning versus independent thought." },
+  { id: "gemini", name: "Gemini", provider: "Google", linked: false, desc: "Sync Gemini sessions to analyze your usage patterns across Google tools." },
+  { id: "perplexity", name: "Perplexity", provider: "Perplexity AI", linked: false, desc: "Measure search-driven inquiry versus synthesis in Perplexity sessions." },
+  { id: "deepseek", name: "DeepSeek", provider: "DeepSeek AI", linked: false, desc: "Track coding and research sessions for balanced cognitive engagement." },
+  { id: "qwen", name: "Qwen", provider: "Alibaba Cloud", linked: false, desc: "Monitor multilingual learning sessions and cross-language inquiry patterns." },
 ];
 
-function ProviderIcon({ id }: { id: string }) {
-  const icons: Record<string, string> = {
-    gemini: "#8E6FD6",
-    chatgpt: "#6D4AC2",
-    perplexity: "#9A93B5",
-    claude: "#A77BFF",
-    deepseek: "#7E5BD0",
-    qwen: "#8E6FD6",
-  };
-
-  const letters: Record<string, string> = {
-    gemini: "G",
-    chatgpt: "C",
-    perplexity: "P",
-    claude: "A",
-    deepseek: "D",
-    qwen: "Q",
-  };
-
-  return (
-    <div
-      className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold font-ui text-white"
-      style={{ background: icons[id] ?? "#9A93B5" }}
-    >
-      {letters[id] ?? "?"}
-    </div>
-  );
-}
+const COLORS: Record<string, string> = {
+  chatgpt: "#6D4AC2", claude: "#A77BFF", gemini: "#8E6FD6",
+  perplexity: "#9A93B5", deepseek: "#7E5BD0", qwen: "#8E6FD6",
+};
+const LETTERS: Record<string, string> = {
+  chatgpt: "C", claude: "A", gemini: "G", perplexity: "P", deepseek: "D", qwen: "Q",
+};
 
 export default function Connect() {
   const [linked, setLinked] = useState<Record<string, boolean>>(
     Object.fromEntries(PROVIDERS.map((p) => [p.id, p.linked]))
   );
 
-  const toggle = (id: string) =>
-    setLinked((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggle = (id: string) => setLinked((prev) => ({ ...prev, [id]: !prev[id] }));
+  const linkedCount = Object.values(linked).filter(Boolean).length;
 
   return (
-    <>
-      <Header />
-      <div className="px-4 pt-6 space-y-5">
-        <div>
-          <h1 className="text-[30px] leading-tight font-medium font-display" style={{ color: "#262040" }}>
-            Connect your AI.
-          </h1>
-          <p className="mt-1 text-sm text-mx-secondary font-ui leading-relaxed">
-            Link your accounts to start measuring your cognitive agency across platforms.
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-medium" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>
+          Connect your AI.
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "#6E6788" }}>
+          Link accounts to start measuring your cognitive agency across platforms.
+        </p>
+      </div>
+
+      {/* Status banner */}
+      <div className="bg-white rounded-2xl border border-[#E4DCF5] p-5 mb-6 flex items-center gap-5">
+        <div className="w-10 h-10 rounded-xl bg-[#EDE7FB] flex items-center justify-center flex-shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M10 3H6a2 2 0 00-2 2v14a2 2 0 002 2h4M10 3h4M10 3v18M14 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M14 3v18" stroke="#6D4AC2" strokeWidth="1.7" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold" style={{ color: "#262040" }}>
+            {linkedCount} of {PROVIDERS.length} platforms connected
+          </p>
+          <p className="text-xs mt-0.5" style={{ color: "#6E6788" }}>
+            Connect more platforms to get a fuller picture of your thinking patterns.
           </p>
         </div>
-
-        <div className="space-y-2">
-          {PROVIDERS.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center gap-4 bg-mx-surface rounded-xl border border-mx-border px-4 py-3.5"
-            >
-              <ProviderIcon id={p.id} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-mx-text font-ui">{p.name}</p>
-                <p className="text-xs text-mx-secondary font-ui">{p.provider}</p>
-              </div>
-              {linked[p.id] ? (
-                <button
-                  onClick={() => toggle(p.id)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium font-ui"
-                  style={{ background: "#EDE7FB", color: "#4A2F9E" }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 12l5 5L20 7" stroke="#4A2F9E" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Linked
-                </button>
-              ) : (
-                <button
-                  onClick={() => toggle(p.id)}
-                  className="px-5 py-2 rounded-full text-sm font-medium font-ui text-white transition-all active:scale-[0.97]"
-                  style={{ background: "#6D4AC2" }}
-                >
-                  Connect
-                </button>
-              )}
-            </div>
-          ))}
+        <div className="flex-shrink-0">
+          <div className="w-32 h-1.5 rounded-full bg-[#F0EBF8] overflow-hidden">
+            <div className="h-full rounded-full bg-[#6D4AC2] transition-all" style={{ width: `${(linkedCount / PROVIDERS.length) * 100}%` }} />
+          </div>
+          <p className="text-xs mt-1 text-right font-medium" style={{ color: "#6D4AC2" }}>
+            {Math.round((linkedCount / PROVIDERS.length) * 100)}% complete
+          </p>
         </div>
+      </div>
 
-        <button className="w-full text-center text-sm font-medium font-ui" style={{ color: "#6D4AC2" }}>
-          Don&apos;t see your provider?
+      {/* Provider grid */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        {PROVIDERS.map((p) => {
+          const isLinked = linked[p.id];
+          return (
+            <div key={p.id}
+              className="bg-white rounded-2xl border p-5 flex flex-col gap-4 transition-all"
+              style={{ borderColor: isLinked ? "#D4C5F9" : "#E4DCF5" }}>
+              {/* Header */}
+              <div className="flex items-start justify-between">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center text-base font-bold text-white"
+                  style={{ background: COLORS[p.id] }}>
+                  {LETTERS[p.id]}
+                </div>
+                {isLinked && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "#EDE7FB", color: "#4A2F9E" }}>
+                    Active
+                  </span>
+                )}
+              </div>
+              {/* Info */}
+              <div>
+                <p className="text-sm font-semibold" style={{ color: "#262040" }}>{p.name}</p>
+                <p className="text-xs mb-2" style={{ color: "#9A93B5" }}>{p.provider}</p>
+                <p className="text-xs leading-relaxed" style={{ color: "#6E6788" }}>{p.desc}</p>
+              </div>
+              {/* Action */}
+              <button
+                onClick={() => toggle(p.id)}
+                className="mt-auto w-full py-2 rounded-xl text-sm font-medium transition-all active:scale-[0.98]"
+                style={isLinked
+                  ? { background: "#F7F5FC", color: "#6E6788", border: "1px solid #E4DCF5" }
+                  : { background: "#6D4AC2", color: "white" }}>
+                {isLinked ? "Disconnect" : "Connect"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="text-center">
+        <button className="text-sm font-medium" style={{ color: "#6D4AC2" }}>
+          Request a new integration →
         </button>
       </div>
-    </>
+    </div>
   );
 }

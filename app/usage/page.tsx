@@ -1,206 +1,145 @@
-import Header from "@/components/Header";
-
-const weeklyDots = [
-  { day: "Mon", val: 28 },
-  { day: "Tue", val: 35 },
-  { day: "Wed", val: 42 },
-  { day: "Thu", val: 38 },
-  { day: "Fri", val: 55 },
-  { day: "Sat", val: 60 },
-  { day: "Sun", val: 65 },
-];
+const weeklyData = [28, 35, 42, 38, 55, 60, 65];
 
 function WeeklyChart() {
-  const W = 300, H = 120, padX = 20, padY = 12;
-  const minV = 20, maxV = 75;
-  const points = weeklyDots.map((d, i) => ({
-    x: padX + (i / (weeklyDots.length - 1)) * (W - padX * 2),
-    y: padY + (1 - (d.val - minV) / (maxV - minV)) * (H - padY * 2),
+  const W = 500, H = 160, padX = 24, padY = 16;
+  const min = 20, max = 72;
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const points = weeklyData.map((v, i) => ({
+    x: padX + (i / (weeklyData.length - 1)) * (W - padX * 2),
+    y: padY + (1 - (v - min) / (max - min)) * (H - padY * 2),
   }));
-
-  const pathD = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-    .join(" ");
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
 
   return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow: "visible" }}>
-      <path d={pathD} fill="none" stroke="#E4DCF5" strokeWidth="1.5" />
+    <svg width="100%" viewBox={`0 0 ${W} ${H + 24}`} style={{ overflow: "visible" }}>
+      {/* Grid lines */}
+      {[0.25, 0.5, 0.75].map((t, i) => (
+        <line key={i} x1={padX} x2={W - padX} y1={padY + t * (H - padY * 2)} y2={padY + t * (H - padY * 2)}
+          stroke="#F0EBF8" strokeWidth="1" />
+      ))}
+      {/* Line */}
+      <path d={pathD} fill="none" stroke="#E4DCF5" strokeWidth="2" strokeLinejoin="round" />
+      {/* Dots */}
       {points.map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r={4}
-          fill="#262040"
-        />
+        <g key={i}>
+          <circle cx={p.x} cy={p.y} r={6} fill="white" stroke="#6D4AC2" strokeWidth="2" />
+          <circle cx={p.x} cy={p.y} r={3} fill="#6D4AC2" />
+        </g>
+      ))}
+      {/* Day labels */}
+      {points.map((p, i) => (
+        <text key={i} x={p.x} y={H + 20} textAnchor="middle"
+          style={{ fontFamily: "var(--font-ui)", fontSize: 11, fill: "#9A93B5" }}>
+          {days[i]}
+        </text>
       ))}
     </svg>
   );
 }
 
 const interactions = [
-  {
-    title: "Epistemology Thesis Review",
-    time: "Today, 2:30 PM",
-    pct: 82,
-    label: "High Engagement",
-    color: "#6D4AC2",
-    icon: "brain",
-  },
-  {
-    title: "Weekly Report Drafting",
-    time: "Yesterday, 9:15 AM",
-    pct: 15,
-    label: "Task Focus",
-    color: "#B0AAC6",
-    icon: "doc",
-  },
-  {
-    title: "Brainstorming System Architecture",
-    time: "Mon, 4:00 PM",
-    pct: 64,
-    label: "Balanced",
-    color: "#6D4AC2",
-    icon: "bulb",
-  },
+  { title: "Epistemology Thesis Review", time: "Today, 2:30 PM", pct: 82, label: "High Engagement", color: "#6D4AC2" },
+  { title: "Weekly Report Drafting", time: "Yesterday, 9:15 AM", pct: 15, label: "Task Focus", color: "#B0AAC6" },
+  { title: "Brainstorming System Architecture", time: "Mon, 4:00 PM", pct: 64, label: "Balanced", color: "#8E6FD6" },
+  { title: "Literature Review — Chapter 3", time: "Sun, 11:00 AM", pct: 91, label: "Deep Inquiry", color: "#6D4AC2" },
 ];
-
-function InteractionIcon({ type }: { type: string }) {
-  if (type === "brain")
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke="#6D4AC2" strokeWidth="1.6" />
-        <circle cx="12" cy="12" r="1.5" fill="#A77BFF" />
-        <path d="M12 8v4l3 2" stroke="#6D4AC2" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    );
-  if (type === "doc")
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5z" stroke="#9A93B5" strokeWidth="1.6" strokeLinejoin="round" />
-        <path d="M14 3v5h5" stroke="#9A93B5" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M9 13h6M9 17h3" stroke="#9A93B5" strokeWidth="1.4" strokeLinecap="round" />
-      </svg>
-    );
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="4" stroke="#6D4AC2" strokeWidth="1.6" />
-      <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#6D4AC2" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 export default function Usage() {
   return (
-    <>
-      <Header />
-      <div className="px-4 pt-6 space-y-6">
-        <div>
-          <h1 className="text-[30px] leading-tight font-medium font-display" style={{ color: "#262040" }}>
-            Your Thinking Habits
-          </h1>
-          <p className="mt-1 text-sm text-mx-secondary font-ui">
-            A breakdown of how you interact with maxim.
-          </p>
-        </div>
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-medium" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>
+          Your Thinking Habits
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "#6E6788" }}>A breakdown of how you interact with maxim.</p>
+      </div>
 
-        {/* Inquiry Focus card */}
-        <div className="rounded-2xl border border-mx-border bg-mx-surface p-5">
-          <div className="text-center mb-5">
-            <p className="text-[52px] leading-none font-medium font-display" style={{ color: "#262040" }}>
-              65%
-            </p>
-            <p className="text-sm text-mx-secondary font-ui mt-1">Inquiry Focus</p>
+      {/* Top row: Inquiry focus + breakdown + trend */}
+      <div className="grid grid-cols-5 gap-5 mb-5">
+        {/* Inquiry focus */}
+        <div className="col-span-2 bg-white rounded-2xl border border-[#E4DCF5] p-7 flex flex-col justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: "#6E6788" }}>Inquiry focus</p>
+            <p className="text-7xl font-medium leading-none" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>65%</p>
+            <p className="text-sm mt-2" style={{ color: "#6E6788" }}>of interactions this week</p>
           </div>
-
-          <div className="space-y-4">
+          <div className="mt-6 pt-5 border-t border-[#F7F5FC] space-y-3">
             <div>
-              <p className="text-[11px] font-semibold tracking-widest text-mx-secondary font-ui uppercase mb-2">
-                Understanding
-              </p>
-              <div className="space-y-2">
-                {[
-                  { label: "Deep Analysis", pct: "40%", color: "#6D4AC2" },
-                  { label: "Concept Exploration", pct: "25%", color: "#8E6FD6" },
-                ].map((r) => (
-                  <div key={r.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
-                      <span className="text-sm text-mx-text font-ui">{r.label}</span>
-                    </div>
-                    <span className="text-sm text-mx-text font-medium font-ui">{r.pct}</span>
+              <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "#6E6788" }}>Understanding</p>
+              {[{ label: "Deep Analysis", pct: "40%", color: "#6D4AC2" }, { label: "Concept Exploration", pct: "25%", color: "#8E6FD6" }].map(r => (
+                <div key={r.label} className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ background: r.color }} />
+                    <span className="text-sm" style={{ color: "#262040" }}>{r.label}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-sm font-medium" style={{ color: "#262040" }}>{r.pct}</span>
+                </div>
+              ))}
             </div>
-
-            <div className="border-t border-mx-border pt-4">
-              <p className="text-[11px] font-semibold tracking-widest text-mx-secondary font-ui uppercase mb-2">
-                Delegating
-              </p>
-              <div className="space-y-2">
-                {[
-                  { label: "Drafting", pct: "20%", color: "#B0AAC6" },
-                  { label: "Summarization", pct: "15%", color: "#C6C1D8" },
-                ].map((r) => (
-                  <div key={r.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
-                      <span className="text-sm text-mx-text font-ui">{r.label}</span>
-                    </div>
-                    <span className="text-sm text-mx-text font-medium font-ui">{r.pct}</span>
+            <div className="pt-2 border-t border-[#F7F5FC]">
+              <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "#6E6788" }}>Delegating</p>
+              {[{ label: "Drafting", pct: "20%", color: "#B0AAC6" }, { label: "Summarization", pct: "15%", color: "#C6C1D8" }].map(r => (
+                <div key={r.label} className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ background: r.color }} />
+                    <span className="text-sm" style={{ color: "#262040" }}>{r.label}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-sm font-medium" style={{ color: "#262040" }}>{r.pct}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Weekly Trend */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-medium font-display" style={{ color: "#262040" }}>
-              Weekly Trend
-            </h2>
-            <span className="text-xs text-mx-secondary font-ui">Last 7 Days</span>
+        <div className="col-span-3 bg-white rounded-2xl border border-[#E4DCF5] p-7">
+          <div className="flex items-center justify-between mb-5">
+            <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#6E6788" }}>Weekly trend</p>
+            <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: "#EDE7FB", color: "#4A2F9E" }}>Last 7 Days</span>
           </div>
-          <div className="rounded-2xl border border-mx-border bg-mx-surface p-4">
-            <WeeklyChart />
-          </div>
-        </div>
-
-        {/* Recent Interactions */}
-        <div>
-          <h2 className="text-lg font-medium font-display mb-3" style={{ color: "#262040" }}>
-            Recent Interactions
-          </h2>
-          <div className="space-y-2">
-            {interactions.map((item) => (
-              <div
-                key={item.title}
-                className="flex items-center gap-3 bg-mx-surface rounded-xl border border-mx-border px-4 py-3"
-              >
-                <div className="w-9 h-9 rounded-full bg-mx-surface-alt flex items-center justify-center flex-shrink-0">
-                  <InteractionIcon type={item.icon} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-mx-text font-ui leading-tight">{item.title}</p>
-                  <p className="text-xs text-mx-secondary font-ui mt-0.5">{item.time}</p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-semibold font-ui" style={{ color: item.color }}>
-                    {item.pct}% Inquiry
-                  </p>
-                  <p className="text-xs text-mx-secondary font-ui">{item.label}</p>
-                </div>
+          <WeeklyChart />
+          <div className="mt-4 pt-4 border-t border-[#F7F5FC] flex gap-8">
+            {[
+              { label: "Avg. inquiry focus", value: "60%" },
+              { label: "Peak day", value: "Sunday" },
+              { label: "Trend", value: "↑ +37pt" },
+            ].map(s => (
+              <div key={s.label}>
+                <p className="text-xs" style={{ color: "#6E6788" }}>{s.label}</p>
+                <p className="text-lg font-medium mt-0.5" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>{s.value}</p>
               </div>
             ))}
           </div>
-          <button className="w-full mt-3 py-3 rounded-xl border border-mx-border text-sm font-medium text-mx-primary font-ui bg-mx-surface hover:bg-mx-surface-alt transition-colors">
-            View Full History
-          </button>
         </div>
       </div>
-    </>
+
+      {/* Recent Interactions */}
+      <div className="bg-white rounded-2xl border border-[#E4DCF5] p-7">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-medium" style={{ fontFamily: "var(--font-display)", color: "#262040" }}>Recent Interactions</h2>
+          <button className="text-sm font-medium" style={{ color: "#6D4AC2" }}>View full history →</button>
+        </div>
+        <div className="divide-y divide-[#F7F5FC]">
+          {interactions.map((item) => (
+            <div key={item.title} className="flex items-center gap-4 py-3.5 group cursor-pointer">
+              <div className="w-9 h-9 rounded-xl bg-[#F7F5FC] flex items-center justify-center flex-shrink-0">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="#6D4AC2" strokeWidth="1.6" />
+                  <circle cx="12" cy="12" r="1.5" fill="#A77BFF" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium" style={{ color: "#262040" }}>{item.title}</p>
+                <p className="text-xs mt-0.5" style={{ color: "#6E6788" }}>{item.time}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold" style={{ color: item.color }}>{item.pct}% inquiry</p>
+                <p className="text-xs mt-0.5" style={{ color: "#9A93B5" }}>{item.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
