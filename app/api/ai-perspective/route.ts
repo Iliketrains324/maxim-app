@@ -1,5 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
-
 export const runtime = "edge";
 
 const SYSTEM_PROMPT = `You are Maxim — a thoughtful learning companion for university students. The student has just practiced "Think First": they wrote their initial understanding of a topic before seeing any AI input. This is excellent cognitive practice that preserves their intellectual agency.
@@ -14,9 +12,9 @@ Structure your response in 2–3 paragraphs:
 Tone: warm, intellectually curious, peer-to-peer. Never preachy. Never start with "I". Keep it under 220 words.`;
 
 export async function POST(req: Request) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return new Response("ANTHROPIC_API_KEY is not configured.", { status: 500 });
+    return new Response("OPENROUTER_API_KEY is not configured.", { status: 500 });
   }
 
   const { draft } = await req.json();
@@ -24,25 +22,56 @@ export async function POST(req: Request) {
     return new Response("No draft provided.", { status: 400 });
   }
 
-  const anthropic = new Anthropic({ apiKey });
-
-  const stream = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 350,
-    stream: true,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: draft }],
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "anthropic/claude-haiku-4-5-20251001",
+      max_tokens: 350,
+      stream: true,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: draft },
+      ],
+    }),
   });
 
-  const encoder = new TextEncoder();
+  if (!res.ok) {
+    const err = await res.text();
+    return new Response(err || "OpenRouter error", { status: res.status });
+  }
+
   const readable = new ReadableStream({
     async start(controller) {
-      for await (const chunk of stream) {
-        if (
-          chunk.type === "content_block_delta" &&
-          chunk.delta.type === "text_delta"
-        ) {
-          controller.enqueue(encoder.encode(chunk.delta.text));
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const data = line.slice(6).trim();
+          if (data === "[DONE]") {
+            controller.close();
+            return;
+          }
+          try {
+            const json = JSON.parse(data);
+            const text = json.choices?.[0]?.delta?.content;
+            if (text) controller.enqueue(new TextEncoder().encode(text));
+          } catch {
+            // skip malformed SSE lines
+          }
         }
       }
       controller.close();

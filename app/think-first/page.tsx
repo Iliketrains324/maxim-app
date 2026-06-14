@@ -224,7 +224,7 @@ export default function ThinkFirst() {
                   </svg>
                 </div>
                 <p className="text-sm" style={{ color: "#E24B4A" }}>{error}</p>
-                {error.includes("ANTHROPIC_API_KEY") && (
+                {error.includes("OPENROUTER_API_KEY") && (
                   <p className="text-xs mt-1" style={{ color: "#9A93B5" }}>
                     Add your key in Vercel → Project Settings → Environment Variables
                   </p>
@@ -261,7 +261,7 @@ export default function ThinkFirst() {
                 <path d="M12 11v5M12 8v.5" stroke="#A77BFF" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
               <p className="text-xs" style={{ color: "#9A93B5" }}>
-                Powered by Claude Haiku · <Link href="/connect" className="underline" style={{ color: "#6D4AC2" }}>Manage AI connections</Link>
+                Powered by Claude Haiku via OpenRouter · <Link href="/connect" className="underline" style={{ color: "#6D4AC2" }}>Manage AI connections</Link>
               </p>
             </div>
           )}
