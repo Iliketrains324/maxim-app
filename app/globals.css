@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-ui: "Inter", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: #e8e4f0;
+  -webkit-font-smoothing: antialiased;
+}
+
+textarea:focus,
+input:focus,
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #6D4AC244;
+}
